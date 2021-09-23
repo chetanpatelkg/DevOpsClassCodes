@@ -1,0 +1,39 @@
+pipeline {
+    agent any
+
+    tools {
+        // Install the Maven version configured as "M3" and add it to the path.
+        jdk "myjava"
+        maven "mymaven"
+    }
+
+    stages {
+        stage('compile') {
+            steps {
+            git 'https://github.com/chetanpatelkg/DevOpsClassCodes.git'
+            sh 'mvn compile'
+            }
+        }
+        stage('codereview'){
+            steps{
+            sh 'mvn pmd:pmd'
+            }
+        }
+        stage('unittest'){
+            steps{
+            sh 'mvn test'
+            }
+        }
+        stage('matriccheck'){
+            steps{
+                sh 'mvn cobertura:cobertura -Dcobertura.report.format=xml'
+            }
+        }
+        stage('package'){
+            steps{
+            sh 'mvn package'
+            }
+        }
+        
+    }
+}
